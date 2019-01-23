@@ -49,10 +49,25 @@ await Promise.all([
 Please notice in `Promise.all` version, we should not put `await` to `page.click` and `page.waitForNavigation`,
 otherwise, `page.waitForNavigation` still waits for `page.click` resolves.
 
-## What if no real page redirection for the click?
+## What if url hash changes, but no real requests send?
 
-In single page application, when we click on a link, only hash of url changes, in this case, browse will not load
-a new page, so there will no ``
+This is a tricky case.
+
+When only hash changes, e.g. `url#a` -> `url#b`, browser will not send real requests if
+we don't have manual AJAX code, so there is no `DOMContentLoaded` or `load` or network activity.
+But puppeteer treat it as a navigation, and we can use `page.waitForNavigation` with all provided `waitUntil` events.
+
+See this demo: <https://github.com/freewind-demos/typescript-puppeteer-wait-for-navigation-with-url-hash-change-demo>
+
+## What if DOM updated by AJAX request, but url and hash not changed?
+
+In this case, puppeteer doesn't treat it as a 'navigation', so we can't use `page.waitForNavigation`.
+
+Instead, we should use `page.waitForSelector` or `page.waitForFunction` to check the expected DOM.
+
+You can find more discussion here: <https://github.com/GoogleChrome/puppeteer/issues/1412#issuecomment-345357063>
+
+## Run this demo
 
 ```
 npm install -g puppeteer
