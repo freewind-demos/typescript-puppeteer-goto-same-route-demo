@@ -1,5 +1,5 @@
-TypeScript Puppeteer Demo
-=======================================
+TypeScript Puppeteer Click To New Url and Wait For Navigation Demo
+==================================================================
 
 ```
 npm install -g puppeteer
