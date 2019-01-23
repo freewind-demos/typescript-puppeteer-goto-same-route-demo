@@ -5,9 +5,9 @@ We often have such a scenario:
 
 1. click a link on page
 2. browser redirects to a new page
-3. we do some checking, e.g. url is correct
+3. we do some checking, e.g. new url is correct
 
-It's natural to write such incorrect code with puppeteer:
+It's natural to write such code with puppeteer:
 
 ```
 await page.click('.someLinkToNewPage');
