@@ -75,4 +75,4 @@ npm run demo
 ```
 
 Note: since puppeteer needs to download a very huge Chrome which makes the installation quite slow,
-I prefer install puppeteer globally and link it to this project before running.
+I prefer install puppeteer globally and reuse it in all my puppeteer demos.
