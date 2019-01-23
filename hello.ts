@@ -56,6 +56,8 @@ async function wrongWayToClickAndWaitForDirection(page: Page) {
   console.log('---------- wrongWayToClickAndWaitForDirection ------------');
   await page.goto("http://localhost/page1");
   await page.click('#link')
+  // after `page.click` resolves, the new page may have already loaded,
+  // the next line will never have `domcontentloaded` event
   await page.waitForNavigation({waitUntil: 'domcontentloaded'})
 }
 
