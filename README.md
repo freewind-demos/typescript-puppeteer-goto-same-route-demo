@@ -49,6 +49,8 @@ await Promise.all([
 Please notice in `Promise.all` version, we should not put `await` to `page.click` and `page.waitForNavigation`,
 otherwise, `page.waitForNavigation` still waits for `page.click` resolves.
 
+You can find more discussion here: <https://github.com/GoogleChrome/puppeteer/issues/1412#issuecomment-345357063>
+
 ## What if url hash changes, but no real requests send?
 
 This is a tricky case.
@@ -64,8 +66,6 @@ See this demo: <https://github.com/freewind-demos/typescript-puppeteer-wait-for-
 In this case, puppeteer doesn't treat it as a 'navigation', so we can't use `page.waitForNavigation`.
 
 Instead, we should use `page.waitForSelector` or `page.waitForFunction` to check the expected DOM.
-
-You can find more discussion here: <https://github.com/GoogleChrome/puppeteer/issues/1412#issuecomment-345357063>
 
 ## Run this demo
 
