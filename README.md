@@ -1,9 +1,18 @@
-TypeScript Puppeteer Click To Goto Same Url Hash Demo
-=====================================================
+TypeScript Puppeteer Goto Same Route Demo
+=========================================
 
-Even if go to the same url with same hash, puppeteer treats it as
-a navigation, so we can use `page.waitForNavigation` to ensure
-the operation is complete
+If puppeteer goto the same route, the DOM is not changed,
+we have to use `page.reload` to refresh it.
+
+Start react app:
+
+```
+cd react-app
+npm install
+npm run demo
+```
+
+Back to the demo root, then start puppeteer code:
 
 ```
 npm install -g puppeteer

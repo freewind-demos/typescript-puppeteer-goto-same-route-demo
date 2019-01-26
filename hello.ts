@@ -17,12 +17,17 @@ async function setupMocks(page: Page) {
   })
 }
 
-async function gotoSection1(page: Page) {
-  console.log('------- gotoSection1 -------')
+async function gotoUrl(page: Page, url: string) {
   await Promise.all([
-    page.goto("http://localhost/page1#section1"),
+    page.goto(url),
     page.waitForNavigation({waitUntil: 'domcontentloaded'})
   ])
+}
+
+async function getTextContent(page: Page, selector: string): Promise<string> {
+  const element = (await page.$(selector))!
+  const textContent = await element.getProperty('textContent')
+  return await textContent.jsonValue() as string
 }
 
 async function run() {
@@ -31,10 +36,19 @@ async function run() {
 
   page.setDefaultNavigationTimeout(1000);
 
-  await setupMocks(page);
+  await gotoUrl(page, "http://localhost:8789/#/counter?_k=4stpzp");
 
-  await gotoSection1(page);
-  await gotoSection1(page);
+  await page.click('#button')
+  const count = await getTextContent(page, '#counter')
+  console.log('count should be 1: ', count)
+
+  await gotoUrl(page, "http://localhost:8789/#/counter?_k=4stpzp");
+  const count2 = await getTextContent(page, '#counter')
+  console.log('count should be 1: ', count2)
+
+  await page.reload({waitUntil: 'domcontentloaded'})
+  const count3 = await getTextContent(page, '#counter')
+  console.log('count should be 0: ', count3)
 
   await browser.close();
 }
