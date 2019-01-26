@@ -1,5 +1,5 @@
 import * as puppeteer from 'puppeteer';
-import {Page} from "puppeteer";
+import {Page} from 'puppeteer';
 
 async function setupMocks(page: Page) {
   await page.setRequestInterception(true);
@@ -11,54 +11,18 @@ async function setupMocks(page: Page) {
         status: 200,
         body: '<a id=\'link\' href="http://localhost/page2">to page2</a>'
       })
-    } else if (url === 'http://localhost/page2') {
-      await request.respond({
-        status: 200,
-        body: 'Page 2'
-      })
     } else {
-      // This is important for `networkidle0`, since browser may have some background requests
-      // like `http://localhost/favicon.ico`, which may break our expectation
       await request.abort();
     }
   })
 }
 
-async function correctWayToClickAndWaitForDomContentLoaded1(page: Page) {
-  console.log('---------- correctWayToClickAndWaitForDomContentLoaded1 ------------');
-  await page.goto("http://localhost/page1");
-
+async function gotoSection1(page: Page) {
+  console.log('------- gotoSection1 -------')
   await Promise.all([
-    page.click('#link'),
-    page.waitForNavigation({waitUntil: 'domcontentloaded'}),
+    page.goto("http://localhost/page1#section1"),
+    page.waitForNavigation({waitUntil: 'domcontentloaded'})
   ])
-}
-
-async function correctWayToClickAndWaitForDomContentLoaded2(page: Page) {
-  console.log('---------- correctWayToClickAndWaitForDomContentLoaded2 ------------');
-  await page.goto("http://localhost/page1");
-
-  const navigation = page.waitForNavigation({waitUntil: 'domcontentloaded'})
-  await page.click('#link')
-  await navigation;
-}
-
-async function correctWayToClickAndWaitForNetworkIdle(page: Page) {
-  console.log('---------- correctWayToClickAndWaitForNetworkIdle ------------');
-  await page.goto("http://localhost/page1");
-  await Promise.all([
-    page.click('#link'),
-    page.waitForNavigation({waitUntil: 'networkidle0'}),
-  ])
-}
-
-async function wrongWayToClickAndWaitForDirection(page: Page) {
-  console.log('---------- wrongWayToClickAndWaitForDirection ------------');
-  await page.goto("http://localhost/page1");
-  await page.click('#link')
-  // after `page.click` resolves, the new page may have already loaded,
-  // the next line will never have `domcontentloaded` event
-  await page.waitForNavigation({waitUntil: 'domcontentloaded'})
 }
 
 async function run() {
@@ -69,16 +33,8 @@ async function run() {
 
   await setupMocks(page);
 
-  await correctWayToClickAndWaitForDomContentLoaded1(page);
-  await correctWayToClickAndWaitForDomContentLoaded2(page);
-  await correctWayToClickAndWaitForNetworkIdle(page);
-
-  try {
-    await wrongWayToClickAndWaitForDirection(page);
-  } catch (e) {
-    console.log('## Expected error ##')
-    console.error(e);
-  }
+  await gotoSection1(page);
+  await gotoSection1(page);
 
   await browser.close();
 }
